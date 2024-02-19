@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "name": "Abraham",
+        "age": 120,
+        "occupation": {
+            "name": "Our Father",
+            "isSaint": false
+        }
+    },
+    {
+        "id": 2,
+        "name": "Sara",
+        "age": 90,
+        "occupation": {
+            "name": "Our Mother",
+            "isSaint": true
+        }
+    },
+    {
+        "id": 3,
+        "name": "Yakov",
+        "age": 110,
+        "occupation": {
+            "name": "Our 3rd Father",
+            "isSaint": true
+        }
+    },
+    {
+        "id": 4,
+        "name": "Hanoch",
+        "age": 780,
+        "occupation": {
+            "name": "Our Teacher",
+            "isSaint": true
+        }
+    },
+    {
+        "id": 5,
+        "name": "Metushelah",
+        "age": 920,
+        "occupation": {
+            "name": "Long Living",
+            "isSaint": false
+        }
+    },
+    {
+        "id": 6,
+        "name": "Miryam",
+        "age": 88,
+        "occupation": {
+            "name": "Prophet",
+            "isSaint": true
+        }
+    }
+]
