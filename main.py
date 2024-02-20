@@ -1,14 +1,65 @@
-from fastapi import Cookie, FastAPI, HTTPException,Query,Path, Request, Response
+from shutil import copyfileobj
+from pathlib import Path as path
+from fastapi import File, UploadFile, FastAPI, HTTPException,Query,Path, Request, Response,Cookie,Form
 import json
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from db import connect
 from pydantic import BaseModel
 from cryptography.fernet import Fernet
 
-
 key = b'uzeXlq2ZX6cJ8JSc06XbU_LpsHOP6TMqA5NpbMICBEI='
 fernet = Fernet(key)
 app = FastAPI()
+
+
+class User(BaseModel):
+    name: str
+    id: int 
+
+@app.get("/upload", response_class=HTMLResponse)
+async def upload_form():
+    return """
+    <form action="/upload" enctype="multipart/form-data" method="post">
+        <input name="file" type="file" multiple>
+        <input name="file_name" type="text">
+        <input type="submit">
+    </form>
+    """
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...),file_name : str=Form(...)):
+    if not file:
+        return {"message": "No upload file sent"}
+    suf= path(file.filename).suffix
+    if not file_name:
+        file_name = file.filename
+    file_path = f"assets/{file_name+suf}"
+    with open(file_path, "wb") as buffer:
+        copyfileobj(file.file, buffer)
+
+    return {"filename": file_name+suf}
+
+# Route to display saint details
+@app.get("/saints/{saint_id}", response_class=HTMLResponse)
+async def read_saint(saint_id: int):
+    result=[]
+    conn = connect()
+    cursor = conn.cursor()
+    query = """
+        SELECT u.name, u.age, o.name,u.image_path
+        FROM users u
+        JOIN occupations o ON u.occupation_id = o.id
+        WHERE u.id = %s 
+        """
+    cursor.execute(query, saint_id)
+    html_content = "<h1>saint details</h1>"
+
+    for row in cursor.fetchall():
+        html_content += f"<p>name = {row[0]}, age: {row[1]}, occupation_name: {row[2]}</p>"
+        html_content += f'<img src="{row[3]}" alt="Saint Image">'
+    conn.close()
+    return HTMLResponse(content=html_content)
 
 @app.middleware("http")
 async def admin_auth_middleware(request: Request, call_next):
@@ -28,10 +79,6 @@ async def admin_auth_middleware(request: Request, call_next):
 
     response = await call_next(request)
     return response 
-
-class User(BaseModel):
-    name: str
-    id: int 
 
 @app.get("/login")    
 async def login_page():
