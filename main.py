@@ -2,10 +2,8 @@ import json
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from db import connect
 from pydantic import BaseModel
-from cryptography.fernet import Fernet
 from shutil import copyfileobj
-from pathlib import Path as path
-from fastapi import File, UploadFile, FastAPI, HTTPException,Query,Path, Request, Response,Cookie,Form
+from fastapi import FastAPI, HTTPException,Query,Path, Request, Response,Cookie,Form
 from fastapi.staticfiles import StaticFiles
 from encryption import fernet
 from upload_routes import router as upload_router
@@ -14,7 +12,7 @@ from upload_routes import router as upload_router
 # key = b'uzeXlq2ZX6cJ8JSc06XbU_LpsHOP6TMqA5NpbMICBEI='
 # fernet = Fernet(key)
 app = FastAPI()
-app.include_router(upload_router, prefix="")
+app.include_router(upload_router, prefix="/upload")
 
 class User(BaseModel):
     name: str

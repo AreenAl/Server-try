@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 
 
 router = APIRouter()
-@router.get("/upload", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 async def upload_form():
     return """
     <form action="/upload" enctype="multipart/form-data" method="post">
@@ -16,7 +16,7 @@ async def upload_form():
     </form>
     """
 
-@router.post("/upload")
+@router.post("/")
 async def upload_file(file: UploadFile = File(...), file_name: str = Form(...)):
     if not file:
         return {"message": "No upload file sent"}
