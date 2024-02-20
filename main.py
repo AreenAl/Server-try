@@ -7,37 +7,18 @@ from shutil import copyfileobj
 from pathlib import Path as path
 from fastapi import File, UploadFile, FastAPI, HTTPException,Query,Path, Request, Response,Cookie,Form
 from fastapi.staticfiles import StaticFiles
+from encryption import fernet
+from upload_routes import router as upload_router
 
 
-key = b'uzeXlq2ZX6cJ8JSc06XbU_LpsHOP6TMqA5NpbMICBEI='
-fernet = Fernet(key)
+# key = b'uzeXlq2ZX6cJ8JSc06XbU_LpsHOP6TMqA5NpbMICBEI='
+# fernet = Fernet(key)
 app = FastAPI()
+app.include_router(upload_router, prefix="")
+
 class User(BaseModel):
     name: str
     id: int 
-
-@app.get("/upload", response_class=HTMLResponse)
-async def upload_form():
-    return """
-    <form action="/upload" enctype="multipart/form-data" method="post">
-        <input name="file" type="file" multiple>
-        <input name="file_name" type="text">
-        <input type="submit">
-    </form>
-    """
-
-@app.post("/upload")
-async def upload_file(file: UploadFile = File(...),file_name : str=Form(...)):
-    if not file:
-        return {"message": "No upload file sent"}
-    suf= path(file.filename).suffix
-    if not file_name:
-        file_name = file.filename
-    file_path = f"assets/{file_name+suf}"
-    with open(file_path, "wb") as buffer:
-        copyfileobj(file.file, buffer)
-
-    return {"filename": file_name+suf}
 
 # Route to display saint details
 @app.get("/saints/{saint_id}", response_class=HTMLResponse)
