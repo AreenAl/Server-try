@@ -1,4 +1,4 @@
-
+from config import AWS_ACCESS_KEY_ID ,AWS_SECRET_ACCESS_KEY 
 from pathlib import Path
 from shutil import copyfileobj
 from fastapi import APIRouter, File, Form, UploadFile
@@ -10,10 +10,6 @@ from db import connect
 
 router = APIRouter()
 
-AWS_ACCESS_KEY_ID = "AKIA6ODU2VAY2OOX7IEZ"
-AWS_SECRET_ACCESS_KEY = "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"
-
-S3_BUCKET_NAME = os.getenv("server-try")
 # Create an S3 client
 s3 = boto3.client(
     "s3",
