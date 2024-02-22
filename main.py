@@ -21,7 +21,6 @@ class User(BaseModel):
 # Route to display saint details
 @app.get("/saints/{saint_id}", response_class=HTMLResponse)
 async def read_saint(saint_id: int):
-    result=[]
     conn = connect()
     cursor = conn.cursor()
     query = """
@@ -30,7 +29,7 @@ async def read_saint(saint_id: int):
         JOIN occupations o ON u.occupation_id = o.id
         WHERE u.id = %s 
         """
-    cursor.execute(query, saint_id)
+    cursor.execute(query, (saint_id,))
     html_content = "<h1>saint details</h1>"
 
     for row in cursor.fetchall():
